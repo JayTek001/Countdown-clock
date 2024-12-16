@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown website with javascript</title>
+    <meta name="description" content="this webstite is created with html, css and javascript to notify users on downtime">
+    <meta name="keyword" content="html,github,css,web,count,countdown,javascript web development, frontend">
+    <link rel="icon" href="/img/tech-support.jpeg" type="icon/png">
+</head>
+<style>
+    body{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        /* background-color: sandybrown; */
+        background-image: url(/img/circuit\ board.jpg);
+
+    }
+    .container{ 
+        display: flex;
+        position: absolute;
+        border: 2px;
+        height: 300px;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        background: whitesmoke;
+        border-radius: 15px;
+        /* opacity: 88%; */
+        width: 50%;
+    }
+
+    .container h2{
+        font-size: 40px;
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+    .title p{
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .time-content table{
+        display:flex;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: 80px;
+    }
+
+    .time{
+        height: 50px;
+        margin: 500px;
+        background-color: black;
+        color: yellow;
+        gap: 10%;
+        justify-content: space-evenly;
+    }
+
+    .time .txt{
+        padding: 10px;
+    }
+
+    @media screen and (max-width: 900px) {
+        .container{
+            width: 90%;
+        }
+        .container h2{
+            font-size: 20px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+        .container .detail{
+            text-align: center;
+            align-items: center;
+            padding: 10px;
+            justify-content: space-between;
+            margin: 20px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            line-height: 30px;
+            text-indent: 10px;
+        }
+    }
+
+    @media screen and (max-width: 640px){
+        .container{
+            height: 400px;
+        }
+        .container h2{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .container .detail{
+            letter-spacing: 2px;
+            /* text-align: center;   */
+            font-weight: bold;
+            line-height: 20px;
+            justify-content: space-between;
+        }
+        .time{
+            height: 50px;
+            padding: 10px;
+        }
+    }
+
+</style>
+<body>
+    <div class="container">
+        <div class="title">
+            <h2>WE ARE COMING SOON...</h2>
+            <p class="detail">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor similique rerum quos ducimus id nesciunt quibusdam mollitiar</p>
+        </div>
+        <div class="time-content">
+            <table>
+                <tr class="time">
+                    <th class="txt">Days</th>
+                    <th class="txt">Hours</th>
+                    <th class="txt">Minutes</th>
+                    <th class="txt">Seconds</th>
+                </tr>
+    
+                <tr class="time">
+                    <td class="day"></td>
+                    <td class="hr"></td>
+                    <td class="mins"></td>
+                    <td class="secs"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script >
+        // check if the initial date is stored in local storage
+        let countdownDate = new Date ("2024-12-25T00:00:00").getTime();
+            localStorage.setItem("countdownDate", countdownDate);
+
+            // if the date is not stored or stored date has assed already. set a new countdown date  
+            const targetDATE = countdownDate;
+
+            const seconds = document.querySelector(".secs");
+            const minutes = document.querySelector(".mins");
+            const hours = document.querySelector(".hr");
+            const days = document.querySelector(".day");
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const remainingTime = targetDATE - now;
+
+                if(remainingTime <= 0){
+                    clearInterval(interval);
+                    localStorage.removeItem("countdownDate"); //remove stored date
+                }
+                const secNum = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                /* remainingTime % (1000 * 60) calculate the milliseconds remaining with the current minute
+                //dividing by 1000 coverts milliseconds to seconds
+                Maths floor ensures you gets the whole number of seconds discarding the fraction part
+                */
+
+                const MinNum = Math.floor((remainingTime % (1000 * 60 * 60))/ (1000 * 60));
+                /* remainingTime % (1000 * 60 * 60 * 24) calculate the milliseconds remaining with the current hour
+                //dividing by 1000 coverts milliseconds to seconds
+                Maths floor ensures you gets the whole number of minutes discarding the fraction part
+                */
+                const HrNum = Math.floor((remainingTime % (1000 * 60 * 60 * 24))/ (1000 * 60 * 60));
+                /* remainingTime % (1000 * 60 * 60 * 24) calculate the milliseconds remaining with the current day
+                //dividing by 1000 coverts milliseconds to seconds
+                Maths floor ensures you gets the whole number of hour discarding the fraction part
+                */
+                const dayNum = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+                /* remainingTime % (1000 * 60 * 60 * 24 ) calculate the milliseconds remaining with the current day
+                //dividing by 1000 coverts milliseconds to seconds
+                Maths floor ensures you gets the whole number of day discarding the fraction part
+                */
+
+                seconds.textContent = secNum < 10 ? `0${secNum}` : secNum;
+                minutes.textContent = MinNum < 10 ? `0${MinNum}` : MinNum;
+                hours.textContent = HrNum < 10 ? `0${HrNum}` : HrNum;
+                days.textContent = dayNum < 10 ? `0${dayNum}` : dayNum;
+            };
+
+            updateCountdown();//initial the update countdatedown
+
+            const interval = setInterval(updateCountdown, 1000)
+    </script>
+</body>
+</html>
